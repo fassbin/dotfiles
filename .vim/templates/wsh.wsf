@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="Shift_JIS" standalone="yes" ?>
+<package>
+  <job id="shortcut">
+  <?job error="true" debug="true" ?>
+  <object id="objFs" progid="Scripting.FileSystemObject" />
+  <object id="objXml" progid="Msxml2.DOMDocument" />
+  <object id="WshShell" progid="WScript.Shell" />
+  <script language="VBScript">
+  <![CDATA[
+  ]]>
+  </script>
+  </job>
+</package>
