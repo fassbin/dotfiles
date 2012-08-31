@@ -30,18 +30,26 @@ else
 endif
 
 " Vim Tmp Path
-if isdirectory($HOME . '/var/.vim_tmp')
-  let $MY_VIMTMP = $HOME . '/var/.vim_tmp'
+if isdirectory($HOME . '/tmp/.vim_tmp')
+  let $MY_VIMTMP = $HOME . '/tmp/.vim_tmp'
 else
   let $MY_VIMTMP = $VIM . '/.vim_tmp'
 endif
 
 " tool path
 if s:is_win
-  "let $MY_TOOLS = fnamemodify($VIM, ":s?bin\\\\vim?local?")
-  let $MY_TOOLS = fnamemodify(expand('$VIM'), ":s?bin/vim?local?")
+  let s:tool_home = $HOME . '/win32'
+  let s:tool_parentdir = fnamemodify(expand('$VIM'), ":s?/vim??")
+  if isdirectory(s:tool_home)
+    let $MY_TOOLS = s:tool_home
+  elseif isdirectory(s:tool_parentdir)
+    let $MY_TOOLS = s:tool_parentdir
+  endif
+  unlet s:tool_home
+  unlet s:tool_parentdir
 endif
 
+" runtimepath
 if s:is_win
   let &runtimepath = join([expand($MY_VIMRUNTIME), expand('$VIMRUNTIME'), expand($MY_VIMRUNTIME.'/after')], ',')
 endif
@@ -713,43 +721,43 @@ if has('vim_starting')
   call neobundle#rc(expand('~/.vim/bundle/'))
 endif
 
-
-" original repos on github
+" github
 "----------------------------
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/neocomplcache'
+  NeoBundle 'Shougo/neocomplcache-snippets-complete'
 "Bundle 'Shougo/vimfiler'
-"Bundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/unite.vim'
   "Bundle 'tsukkee/unite-help'
-  "Bundle 'sgur/unite-everything'
+  NeoBundle 'sgur/unite-everything'
   "Bundle 'sgur/unite-qf'
   "Bundle 'Sixeight/unite-grep'
   "Bundle 'Shougo/unite-grep'
   "Bundle 'tacroe/unite-alias'
   "Bundle 'tsukkee/unite-tag'
 
-"Bundle 'thinca/vim-quickrun'
+NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
   NeoBundle 'osyo-manga/ref-lynx'
   "Bundle 'soh335/vim-ref-jquery'
   "Bundle 'pekepeke/ref-javadoc'
 "Bundle 'thinca/vim-ft-vim_fold'
 
-"Bundle 'tpope/vim-surround'
+NeoBundle 'tpope/vim-surround'
 "Bundle 'tpope/vim-fugitive'
 
 "Bundle 'kana/vim-textobj-user'
 
-"Bundle 'clones/vim-align'
 "Bundle 'clones/vim-taglist'
 
-" vim-scripts repos
+" vim-scripts
 "----------------------------
+NeoBundle 'Align'
 "Bundle 'rails.vim'
 "Bundle 'xml.vim'
 
-" non github repos
+" other
 "----------------------------
 "Bundle 'git://git.wincent.com/command-t.git'
 
@@ -771,11 +779,9 @@ if neobundle#exists_not_installed_bundles()
  "finish
 endif
 
-
 " Shougo/neocomplcache {{{2
 "----------------------------------------------------------------------------
-let g:neocomplcache_snippets_dir=$MY_VIMRUNTIME . '/snippets'
-let g:neocomplcache_temporary_dir=$MY_VIMTMP . '/.neocon'
+"let g:neocomplcache_temporary_dir=$MY_VIMTMP . '/.neocon'
 "let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 0
 let g:neocomplcache_enable_camel_case_completion = 1
@@ -847,9 +853,14 @@ inoremap <expr><C-e> neocomplcache#smart_close_popup()."\<C-e>"
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
 
+" 'Shougo/neocomplcache-snippets-complete' {{{2
+"----------------------------------------------------------------------------
+let g:neocomplcache_snippets_dir=$MY_VIMRUNTIME . '/snippets'
+
+
 " Shougo/unite.vim {{{2
 "----------------------------------------------------------------------------
-"let g:unite_data_directory = $MY_VIMTMP . '/.unite'
+let g:unite_data_directory = $HOME . '/.vim-unite'
 "let g:unite_source_file_mru_file = g:unite_data_directory . '/.file_mru'
 "let g:unite_source_bookmark_file = g:unite_data_directory . '/.bookmark'
 "let g:unite_source_directory_mru_file = g:unite_data_directory . '/.dir_mru'
@@ -964,7 +975,13 @@ nmap [Space]vs <Plug>(vimshell_split_switch)
 
 " Shougo/vimproc {{{2
 "----------------------------------------------------------------------------
-
+if has('mac')
+  let g:vimproc_dll_path = $VIMRUNTIME . '/autoload/vimproc_mac.so'
+elseif has('win64')
+  let g:vimproc_dll_path = $HOME . '/.vim/bundle/vimproc/autoload/vimproc_win64.dll'
+elseif has('win32')
+  let g:vimproc_dll_path = $HOME . '/.vim/bundle/vimproc/autoload/vimproc_win32.dll'
+endif
 
 " Shougo/vimfiler {{{2
 "----------------------------------------------------------------------------
@@ -987,7 +1004,7 @@ endfunction
 
 " thinca/vim-ref {{{2
 "----------------------------------------------------------------------------
-let g:ref_cache_dir = $MY_VIMTMP . '/.ref'
+let g:ref_cache_dir = $MY_VIMTMP . '/.vim_ref_cache'
 let s:my_ref_cmd = ''
 
 if exists('*ref#register_detection')
@@ -997,12 +1014,10 @@ if exists('*ref#register_detection')
   call ref#register_detection('php', 'phpmanual')
 endif
 
-"------------------------------------------------
 " for Windows
 "------------------------------------------------
 if s:is_win
   let s:my_ref_cmd = 'lynx -display_charset=utf-8 -dump -nonumbers %s'
-  "let s:my_ref_cmd = 'C:/fus/win32/lynx/lynx.exe -dump -nonumbers %s'
 
   " nossl
   command! -nargs=+ -complete=customlist,ref#complete MyRef
