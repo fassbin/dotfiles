@@ -51,7 +51,7 @@ endif
 
 " runtimepath
 if s:is_win
-  let &runtimepath = join([expand($MY_VIMRUNTIME), expand('$VIMRUNTIME'), expand($MY_VIMRUNTIME.'/after')], ',')
+  let &runtimepath = join([expand($MY_VIMRUNTIME), expand($VIMRUNTIME), expand($MY_VIMRUNTIME.'/after')], ',')
 endif
 
 " Set augroup.
