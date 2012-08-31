@@ -454,7 +454,9 @@ vmap [Space]ch v`<I<CR><esc>k0i<!--<ESC>`>j0i--><CR><esc><ESC>
 "****************************************************************************
 augroup MyAutoCmd
   au BufNewFile,BufRead *.ng setf javascript
+  au BufNewFile,BufRead *.ahk setf autohotkey
   au BufNewFile,BufRead *.afx setf afx
+  au BufNewFile,BufRead *.mq4 setf mql4
   au BufRead $MY_VIMRUNTIME/bundle/*,$MY_VIMRUNTIME/doc/*,$VIM/* setl noma ro
   au BufRead $HOME/doc/ref/* setl noma ro
   au BufRead $HOME/lib/* setl noma ro
@@ -701,60 +703,73 @@ command! -nargs=0 Undiff set nodiff noscrollbind wrap
 " Plugin: {{{1
 "****************************************************************************
 
-" pathogen.vim {{{2
-"----------------------------------------------------------------------------
-"command! -nargs=0 PathHelptags call pathogen#helptags()
-"call pathogen#runtime_append_all_bundles()
-
-
 " Shougo/neobundle.vim {{{2
 "----------------------------------------------------------------------------
-if s:is_win
-  let g:my_vundle_git_cmd = $HOME . '\win32\etc\git-cd-pull.cmd'
+set nocompatible               " Be iMproved
+filetype off                   " Required!
+
+if has('vim_starting')
+  set runtimepath+=~/.vim/bundle/neobundle.vim/
+  call neobundle#rc(expand('~/.vim/bundle/'))
 endif
 
-filetype off
-set rtp+=~/.vim/bundle/vundle
-call vundle#rc()
-filetype plugin indent on
 
 " original repos on github
 "----------------------------
-Bundle 'Shougo/neocomplcache'
-Bundle 'Shougo/vimfiler'
-Bundle 'Shougo/vimproc'
-Bundle 'Shougo/vimshell'
-Bundle 'Shougo/unite.vim'
-    Bundle 'tsukkee/unite-help'
-    Bundle 'sgur/unite-everything'
-    Bundle 'sgur/unite-qf'
-    "Bundle 'Sixeight/unite-grep'
-    Bundle 'Shougo/unite-grep'
-    Bundle 'tacroe/unite-alias'
-    Bundle 'tsukkee/unite-tag'
+NeoBundle 'Shougo/vimproc'
+NeoBundle 'Shougo/neocomplcache'
+"Bundle 'Shougo/vimfiler'
+"Bundle 'Shougo/vimshell'
+NeoBundle 'Shougo/unite.vim'
+  "Bundle 'tsukkee/unite-help'
+  "Bundle 'sgur/unite-everything'
+  "Bundle 'sgur/unite-qf'
+  "Bundle 'Sixeight/unite-grep'
+  "Bundle 'Shougo/unite-grep'
+  "Bundle 'tacroe/unite-alias'
+  "Bundle 'tsukkee/unite-tag'
 
-Bundle 'thinca/vim-quickrun'
-Bundle 'thinca/vim-ref'
-    Bundle 'soh335/vim-ref-jquery'
-    "Bundle 'pekepeke/ref-javadoc'
+"Bundle 'thinca/vim-quickrun'
+NeoBundle 'thinca/vim-ref'
+  NeoBundle 'osyo-manga/ref-lynx'
+  "Bundle 'soh335/vim-ref-jquery'
+  "Bundle 'pekepeke/ref-javadoc'
 "Bundle 'thinca/vim-ft-vim_fold'
 
-Bundle 'tpope/vim-surround'
+"Bundle 'tpope/vim-surround'
 "Bundle 'tpope/vim-fugitive'
 
 "Bundle 'kana/vim-textobj-user'
 
-Bundle 'clones/vim-align'
+"Bundle 'clones/vim-align'
 "Bundle 'clones/vim-taglist'
 
 " vim-scripts repos
 "----------------------------
 "Bundle 'rails.vim'
-Bundle 'xml.vim'
+"Bundle 'xml.vim'
 
 " non github repos
 "----------------------------
 "Bundle 'git://git.wincent.com/command-t.git'
+
+"----------------------------
+filetype plugin indent on
+
+"----------------------------
+"
+ " Brief help
+ " :NeoBundleList          - list configured bundles
+ " :NeoBundleInstall(!)    - install(update) bundles
+ " :NeoBundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+
+" Installation check.
+if neobundle#exists_not_installed_bundles()
+ echomsg 'Not installed bundles : ' .
+       \ string(neobundle#get_not_installed_bundle_names())
+ echomsg 'Please execute ":NeoBundleInstall" command.'
+ "finish
+endif
 
 
 " Shougo/neocomplcache {{{2
@@ -834,13 +849,14 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
 " Shougo/unite.vim {{{2
 "----------------------------------------------------------------------------
-let g:unite_data_directory = $MY_VIMTMP . '/.unite'
+"let g:unite_data_directory = $MY_VIMTMP . '/.unite'
 "let g:unite_source_file_mru_file = g:unite_data_directory . '/.file_mru'
 "let g:unite_source_bookmark_file = g:unite_data_directory . '/.bookmark'
 "let g:unite_source_directory_mru_file = g:unite_data_directory . '/.dir_mru'
 let g:unite_source_file_mru_limit = 100
 "let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$'
 "let g:unite_update_time = 200
+let g:unite_source_history_yank_enable = 1
 
 " mappings
 "----------------------------------------
@@ -927,7 +943,7 @@ let g:unite_source_alias_aliases = {
 
 " Shougo/vimshell {{{2
 "----------------------------------------------------------------------------
-let g:vimshell_temporary_directory = $MY_VIMTMP . '/.vimshell'
+"let g:vimshell_temporary_directory = $MY_VIMTMP . '/.vimshell'
 "let g:vimshell_vimshrc_path = expand('~/.vimshrc')
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 "let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
@@ -954,7 +970,7 @@ nmap [Space]vs <Plug>(vimshell_split_switch)
 "----------------------------------------------------------------------------
 "let g:loaded_netrwPlugin = 1
 let g:vimfiler_as_default_explorer = 1
-let g:vimfiler_trashbox_directory	= $MY_VIMTMP . '/.vimfiler_trash'
+"let g:vimfiler_trashbox_directory	= $MY_VIMTMP . '/.vimfiler_trash'
 
 
 autocmd! MyAutoCmd FileType vimfiler call s:vimfiler_settings()
@@ -975,7 +991,7 @@ let g:ref_cache_dir = $MY_VIMTMP . '/.ref'
 let s:my_ref_cmd = ''
 
 if exists('*ref#register_detection')
-  "call ref#register_detection('_', 'alc')
+  call ref#register_detection('_', 'alc')
   call ref#register_detection('java', 'javadoc')
   call ref#register_detection('javascript', 'jquery', 'append')
   call ref#register_detection('php', 'phpmanual')
@@ -986,6 +1002,7 @@ endif
 "------------------------------------------------
 if s:is_win
   let s:my_ref_cmd = 'lynx -display_charset=utf-8 -dump -nonumbers %s'
+  "let s:my_ref_cmd = 'C:/fus/win32/lynx/lynx.exe -dump -nonumbers %s'
 
   " nossl
   command! -nargs=+ -complete=customlist,ref#complete MyRef
@@ -1020,8 +1037,7 @@ let g:ref_javadoc_path = $HOME . '/doc/ref/javadoc/ja'
 
 " php
 let g:ref_phpmanual_cmd = s:my_ref_cmd
-let g:ref_phpmanual_path = $HOME . '/doc/ref/phpman'
-
+let g:ref_phpmanual_path = $HOME . '/doc/ref/php-chunked-xhtml'
 
 " flush
 "----------------------------------------

@@ -1,0 +1,11 @@
+[gui]
+[user]
+    email = test@test.com
+    name = test
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
+[core]
+	autocrlf = input
