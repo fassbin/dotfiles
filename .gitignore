@@ -16,3 +16,15 @@
 ###
 #bundle/
 tmp/
+.vim/bundle/Align
+#.vim/bundle/neobundle.vim
+.vim/bundle/neocomplcache
+.vim/bundle/neocomplcache-snippets-complete
+.vim/bundle/ref-lynx
+.vim/bundle/unite-everything
+.vim/bundle/unite.vim
+.vim/bundle/vim-quickrun
+.vim/bundle/vim-ref
+.vim/bundle/vim-surround
+.vim/bundle/vimproc
+.vim/bundle/vimshell
