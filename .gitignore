@@ -16,7 +16,7 @@
 ###
 #bundle/
 tmp/
-.vim/bundle/Align
+#.vim/bundle/Align
 #.vim/bundle/neobundle.vim
 .vim/bundle/neocomplcache
 .vim/bundle/neocomplcache-snippets-complete
